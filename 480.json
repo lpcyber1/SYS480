@@ -1,0 +1,7 @@
+{
+    "vmserver": "super21.liam.local",
+    "vmnetwork": "480-WAN",
+    "datastore": "datastore2",
+    "vmserverIP": "192.168.3.233",
+    "vcenter": "vcenter.liam.local"
+}

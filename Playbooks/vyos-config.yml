@@ -1,0 +1,22 @@
+---
+- name: Blue1 Vyos Networking Config
+  hosts: blue1-fw
+  vars_prompt:
+  - name: password
+    prompt: Enter the new Vyos password
+    private: true
+  tasks:
+    - name: Set the password hash
+      set_fact:
+        password_hash: "{{ password | password_hash('sha512') }}"
+    - name: Load Vyos config from template
+      become: yes
+      template:
+        src: /home/liam/SYS480/Playbooks/config.boot.j2
+        dest: /config/config.boot
+        mode: "0775"
+        owner: root
+        group: vyattacfg
+    - name: Leave system and shutdown
+      become: yes
+      shell: nohup bash -c "sudo reboot -h now" &

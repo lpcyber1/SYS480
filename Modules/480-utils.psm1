@@ -1,14 +1,14 @@
 <#
-Powershell module written by Liam Paul for Milestone 5 of SYS480
+Powershell module written by Liam Paul for SYS480
 #>
+
+# Importing variables from another file
+
 
 # Function to connect to a vCenter server
 function ConnectTovCenter(){
-    # Prompts for the name of the vCenter server to connect to
-    $server = Read-Host "Enter the name of the vCenter server"
-
     # Connects to the vCenter server, this will prompt for a password
-    Connect-VIServer -Server $server 
+    Connect-VIServer -Server $config.vcenter
 }
 
 # Function to create a Linked Clone of a VM
@@ -33,16 +33,11 @@ function CreateLinkedClone(){
     # Retrieves the "Base" snapshot from the selected VM
     $snapshot = (Get-Snapshot -VM (Get-VM -Name $VMtoClone) -Name "Base") 
     
-    # Defines the server, network, and datastore for the new VM
-    $vmserver = "super21.liam.local"
-    $vmnetwork = "480-WAN"
-    $datastore = "datastore2"
-
     # Outputs the creation process of the new VM to the console
     Write-Host "Creating new vm:" $New -ForegroundColor Green
 
     # Creates the new linked clone using the reference snapshot
-    New-VM -LinkedClone -Name $New -VM $VMtoClone -ReferenceSnapshot $snapshot -VMHost $vmserver -Datastore $datastore
+    New-VM -LinkedClone -Name $New -VM $VMtoClone -ReferenceSnapshot $snapshot -VMHost $config.vmserver -Datastore $config.datastore
     
     # Confirms the creation of the new VM
     Write-Host "Created" $New -ForegroundColor Green
@@ -70,16 +65,11 @@ function CreateFullClone(){
     # Retrieves the "Base" snapshot from the selected VM
     $snapshot = (Get-Snapshot -VM (Get-VM -Name $VMtoClone) -Name "Base") 
     
-    # Defines the server, network, and datastore for the new VM
-    $vmserver = "super21.liam.local"
-    $vmnetwork = "480-WAN"
-    $datastore = "datastore2"
-
     # Outputs the creation process of the new VM to the console
     Write-Host "Creating new vm:" $New -ForegroundColor Green
 
     # Creates the new full clone using the reference snapshot
-    New-VM -Name $New -VM $VMtoClone -ReferenceSnapshot $snapshot -VMHost $vmserver -Datastore $datastore
+    New-VM -Name $New -VM $VMtoClone -ReferenceSnapshot $snapshot -VMHost $config.vmserver -Datastore $config.datastore
     
     # Confirms the creation of the new VM
     Write-Host "Created" $New -ForegroundColor Green
@@ -141,4 +131,42 @@ function TurnOffVM(){
 
     # Stops the selected VM
     Stop-VM -VM $VMtoTurnOFF
+}
+
+# Function to create a Virtual Switch and Portgroup
+function NewNetwork(){
+    # Asks for the name of new network
+    $NewVirtualSwitch = Read-Host "Enter the name of the new virtual switch"
+
+    # Creates new Virtual Switch
+    New-VirtualSwitch -VMHost $config.vmserver -Name $NewVirtualSwitch
+
+    # Asks for the name of the new port group 
+    $NewPortGroup = Read-Host "Enter the name of the new port group on" $NewVirtualSwitch
+
+    # Creates new Port Group
+    New-VirtualPortGroup -VirtualSwitch $NewVirtualSwitch -Name $NewPortGroup
+
+    Write-Host "Created new Virtual Switch" $NewVirtualSwitch "and Port Group" $NewPortGroup -ForegroundColor Green
+}
+
+function Get-IP {
+    # Asks for the variable 
+    $SelectVM = Read-Host "Enter the name of the VM"
+    $VM = Get-VM -Name $SelectVM
+
+    # Gets the network adapters for the VM and IP
+    $networkadapters = Get-NetworkAdapter -VM $vm
+    $IP = Get-VMGuest -VM $VM
+    
+    # Custom result I created to neatly display the results of the commands above
+    $results = [PSCustomObject]@{
+        "VM Name" = $VM
+        "VM Network" = $networkadapters.NetworkName
+        "MAC Address" = $networkadapters.MacAddress
+        "IP Address" = $IP.IPAddress
+    }
+    
+    # Returns the PSCustomObject to display results
+    return $results
 }

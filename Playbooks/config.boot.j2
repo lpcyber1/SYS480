@@ -1,0 +1,85 @@
+interfaces {
+    ethernet eth0 {
+        description 480-WAN
+        address {{ wan_ip }}/24
+    }
+    ethernet eth1 {
+        description BLUE1-LAN
+        address {{ lan_ip }}/24
+    }
+    loopback lo {
+    }
+}
+nat {
+    source {
+        rule 1 {
+            outbound-interface {
+                name eth0
+            }
+            source {
+                address {{ lan }}
+            }
+            translation {
+                address masquerade
+            }
+        }
+    }
+}
+protocols {
+    static {
+        route 0.0.0.0/0 {
+            next-hop {{ gateway }}
+        }
+    }
+}
+service {
+    ntp {
+        server 0.pool.ntp.org {
+        }
+        server 1.pool.ntp.org {
+        }
+        server 2.pool.ntp.org {
+        }
+    }
+    ssh {
+        listen-address {{ lan_ip }}
+        port 22
+    }
+    dns {
+        forwarding {
+            allow-from {{ lan }}
+            listen-address {{ lan_ip }}
+            system
+        }
+    }
+}
+system {
+    config-management {
+        commit-revisions 100
+    }
+    console {
+        device ttyS0 {
+            speed 115200
+        }
+    }
+    host-name {{ hostname }}
+    login {
+        user vyos {
+            authentication {
+                encrypted-password {{ password_hash }}
+                plaintext-password ""
+            }
+        }
+    }
+    name-server {{ nameserver }}
+    syslog {
+        global {
+            facility all {
+                level info
+            }
+            facility local7 {
+                level debug
+            }
+        }
+    }
+}
