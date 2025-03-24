@@ -14,4 +14,4 @@
 
 ## [Milestone 6 - Blue Network and vyos Provisioning with Ansible](https://github.com/lpcyber1/SYS480/wiki/Milestone-6-%E2%80%90-Blue-Network-and-vyos-Provisioning-with-Ansible)
 
-## [[Milestone 7 - Deploying & Post Provisioning of BlueX Linux Servers]]
+## [Milestone 7 - Deploying and Post Provisioning of BlueX Linux Servers](https://github.com/lpcyber1/SYS480/wiki/Milestone-7---Deploying-%26-Post-Provisioning-of-BlueX-Linux-Servers)
