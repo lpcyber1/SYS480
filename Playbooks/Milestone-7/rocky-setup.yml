@@ -1,0 +1,65 @@
+---
+- name: Configuring Rocky post deployment
+  hosts: Blue-Rocky
+  gather_facts: no
+
+  tasks:
+    - name: create the ssh directory if it is not there 
+      file:
+        path: "/home/{{ ansible_user }}/.ssh"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0700
+
+    - name: create authorized_keys file
+      file:
+        path: "/home/{{ ansible_user }}/.ssh/authorized_keys"
+        state: touch
+        mode: 0644
+
+    - name: add ssh key
+      blockinfile: 
+        dest: "/home/{{ ansible_user }}/.ssh/authorized_keys"
+        block: "{{ public_key }}"
+      become: yes
+
+    - name: Create a sudoers drop-in file for no password elevation to root by deployer
+      file:
+        path: /etc/sudoers.d/480
+        state: touch
+        mode: 0440
+      become: yes
+
+    - name: Add line to file
+      blockinfile:
+          dest: /etc/sudoers.d/480
+          block: "{{ ansible_user }}  ALL=(ALL) NOPASSWD: ALL"
+      become: yes
+
+    - name: Change the hostname
+      hostname:
+        name: "{{ hostname }}"
+      become: yes
+
+    - name: Add hostname to hosts file
+      lineinfile:
+        path: /etc/hosts
+        line: '127.0.0.1  {{ hostname }}'
+      become: yes
+
+    - name: Change the IP address to static
+      nmcli: 
+        conn_name:  "{{ device }}"
+        type: ethernet
+        ip4: "{{ IP }}"
+        dns4: "{{ name_server }}"
+        gw4: "{{ default_router }}"
+        state: present
+      become: yes
+    
+    - name: Restart system to apply changes
+      shell: "sleep5 && shutdown -r"
+      async: 1
+      poll: 0
+      become: yes

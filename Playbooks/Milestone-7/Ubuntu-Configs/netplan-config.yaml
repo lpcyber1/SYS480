@@ -1,0 +1,16 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    {{ device }}:
+      dhcp4: no
+      addresses:
+        - {{ IP }}/24
+      routes:
+        - to: default
+          via: {{ default_router }}
+      nameservers:
+        addresses: 
+          - {{ name_server }}
+        search: 
+          - {{ domain }}

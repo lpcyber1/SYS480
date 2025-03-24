@@ -12,7 +12,7 @@
     - name: Load Vyos config from template
       become: yes
       template:
-        src: /home/liam/SYS480/Playbooks/config.boot.j2
+        src: "/home/liam/SYS480/Vyos-Configs/config.boot.j2"
         dest: /config/config.boot
         mode: "0775"
         owner: root

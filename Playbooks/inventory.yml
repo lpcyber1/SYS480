@@ -7,19 +7,62 @@ all:
           ansible_user: deployer
           ansible_connection: ssh
           ansible_shell_type: powershell
+
     Linux:
       hosts:
-        xubuntu-wan: 
+        xubuntu-wan:
           ansible_host: 10.0.17.100
           ansible_user: liam
-          
+      children:
+        Blue:
+          children:
+            Blue-Rocky:
+              hosts:
+                Rocky1:
+                  ansible_host: 10.0.5.81
+                  hostname: rocky1
+                  IP: 10.0.5.10
+                  device: ens34
+                Rocky2:
+                  ansible_host: 10.0.5.82
+                  hostname: rocky2
+                  IP: 10.0.5.11
+                  device: ens34
+                Rocky3:
+                  ansible_host: 10.0.5.84
+                  hostname: rocky3
+                  IP: 10.0.5.12
+                  device: ens34
+            
+            Blue-Ubuntu:
+              hosts:
+                Ubuntu1:
+                  ansible_host: 10.0.5.83
+                  hostname: ubuntu1
+                  IP: 10.0.5.30
+                  device: ens34
+
+                Ubuntu2:
+                  ansible_host: 10.0.5.80
+                  hostname: ubuntu2
+                  IP: 10.0.5.31
+                  device: ens34
+
+      
+      vars:
+        public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCusuiJFgq2++TXs6JFGR1D6t2fQpfZjpw7Plozzrfw/Op8Orl6gYDtJvWkajvbWY9m+83gCRNmXTsi/xEGu+LjRmVSumyqiTFQBVxAp7Ij4Ps+HHh0wrCDSYfVxQd6gJf7AndxFboiZtsr+fZrmtuPh3MxzE+pb83xihdaXzMZjYNk6p/Gu6SoZMYk/bdtu9J4610O8HBWDPfpf5UQsHWncnH2NgAE6Au7sgorv/pQliUYo6SGTnZiEvGv/gNqLqNU4gu5pJFcFlXOUXLE5ReOvdEic3tfOl30dFU/mi0IFOgSzQVcBPD0mtZC3XSfwGTb3TYJT4XSdZBW/V5oylSQ6dzOdYWAPM03M8I17VkExK6LU3PiwGgFEqh8yMFEFYgeSOOa0sXaKrLfYVWExxRh6lZb6SG5CsPPfoujx/WQhHrPCSFJemCslwNjhJNrhlAxOn3nFUqberShp2OIfuEJ1q1L/SLUZs4C+KJWgND8H5cCDeJPA8mMHOr5/U+VHpoT0IjK/mi+b5sJoJNw+QwFEg9okQYoIENx8zX18blGb7OM/4mWb6SVIgpj7Jm+ezdHtiGu6NddS3j013H06j2VI4sIa9aTzVlizjbrT2X4dDH2ohjCNxLTafK2n56fyeaXqkqWndYyToxqIq2LXfzbJNJL3AYN4OYCZkGAL37UzQ== deployer@xubuntu-wan
+        domain: blue1.local
+        default_router: 10.0.5.2
+        name_server: 10.0.5.2
+        ansible_user: deployer
+
     Vyos:
       hosts:
-        480-fw: 
+        480-fw:
           ansible_host: 10.0.17.2
           ansible_user: vyos
-        blue1-fw: 
-          ansible_host: 10.0.17.101
+        blue1-fw:
+          ansible_host: 10.0.17.200
           ansible_user: vyos
           ansible_python_interpreter: /usr/bin/python3.11
           wan_ip: 10.0.17.200
