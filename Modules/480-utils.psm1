@@ -69,7 +69,7 @@ function CreateFullClone(){
     Write-Host "Creating new vm:" $New -ForegroundColor Green
 
     # Creates the new full clone using the reference snapshot
-    New-VM -Name $New -VM $VMtoClone -ReferenceSnapshot $snapshot -VMHost $config.vmserver -Datastore $config.datastore
+    New-VM -Name $New -VM $VMtoClone -VMHost $config.vmserver -Datastore $config.datastore
     
     # Confirms the creation of the new VM
     Write-Host "Created" $New -ForegroundColor Green
@@ -82,7 +82,7 @@ function SetVMNetwork(){
     Write-Host $VMs
 
     # Prompts the user to select a VM
-    $SelectedVM = Read-Host "Enter the name of the VM:"
+    $SelectedVM = Read-Host "Enter the name of the VM"
 
     # Retrieves the network adapter of the selected VM
     $NetworkAdapter = Get-NetworkAdapter -VM $SelectedVM
@@ -91,11 +91,11 @@ function SetVMNetwork(){
     $Networks = Get-VirtualNetwork
 
     # Displays the available networks to the user
-    Write-Host "Available Networks:"
+    Write-Host "Available Networks"
     Write-Host $Networks
 
     # Prompts the user to select a network for the VM
-    $SelectedNetwork = Read-Host "Enter the name of the network:"
+    $SelectedNetwork = Read-Host "Enter the name of the network"
     
     # Sets the selected network for the network adapter of the VM
     Set-NetworkAdapter -NetworkAdapter $NetworkAdapter -NetworkName $SelectedNetwork
@@ -169,4 +169,31 @@ function Get-IP {
     
     # Returns the PSCustomObject to display results
     return $results
+}
+
+function Set-Windows-IP {
+    # Asking for variables
+    $SelectVM = Read-Host "Enter the name of the VM"
+    $VM = Get-VM -Name $SelectVM
+
+    $NewIP = Read-Host "Enter the new IP"
+    $NewGateway = Read-Host "Enter the new Gateway IP"
+    $NewNetmask = Read-Host "Enter the new Netmask"
+    $NewNameserver = Read-Host "Enter the new Nameserver"
+    $Interface = "Ethernet0"
+
+    # Gets the Creds to the VM
+    $Creds = Get-Credential
+
+    # Script to run within the VM
+    $Script = @"
+netsh interface ip set address name=$Interface static $NewIP $NewNetmask $NewGateway 1
+netsh interface ip set dns name=$Interface static $NewNameserver
+"@
+
+    # Runs the script within the VM
+    Invoke-VMScript -VM $VM -ScriptText $Script -GuestCredential $Creds -ScriptType Bat
+
+    Write-Host "IP Configuration applied successfully to:" $SelectVM
+
 }

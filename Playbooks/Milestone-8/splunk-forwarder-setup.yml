@@ -1,0 +1,38 @@
+---
+- name: Configuring Splunk Forwarder on blue1-fw
+  hosts: blue1-fw
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Download Splunk Universal Forwarder
+      get_url: url={{ splunk_forwarder }} dest=/tmp/{{ out_file }} 
+
+    - name: Install the package
+      command: sudo dpkg -i /tmp/{{ out_file }}
+
+    - name: Set splunk Admin password before first start
+      copy:
+        dest: "/opt/splunkforwarder/etc/system/local/user-seed.conf"
+        content: |
+          [user_info]
+          USERNAME = admin
+          PASSWORD = {{ splunk_admin_password }}
+
+    - name: Accept Splunk license and start Splunk
+      command: "/opt/splunkforwarder/bin/splunk start --accept-license --answer-yes --no-prompt"
+    
+    - name: Enable Splunk on system startup
+      command: "/opt/splunkforwarder/bin/splunk enable boot-start"
+
+    - name: Connect forwarder to deployment server
+      command: "/opt/splunkforwarder/bin/splunk add forward-server 10.0.5.50:9997 -auth admin:{{ splunk_admin_password }}"
+
+    - name: Configure Splunk to monitor /var/log on blue1-fw
+      command: "/opt/splunkforwarder/bin/splunk add monitor /var/log -auth admin:{{ splunk_admin_password }}"
+
+    - name: Restart Splunk
+      command: "/opt/splunkforwarder/bin/splunk restart"
+
+    - name: Remove Splunk .deb 
+      command: "rm /tmp/{{ out_file }}"

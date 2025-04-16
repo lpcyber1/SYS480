@@ -1,0 +1,12 @@
+all:
+  children:
+    Windows:
+      hosts:
+        blue1-dc:
+          ansible_host: 10.0.5.5
+          ansible_user: deployer
+          ansible_connection: ssh
+          ansible_shell_type: cmd
+          hostname: blue1-dc
+          ansible_become: no
+          ansible_shell_executable: powershell

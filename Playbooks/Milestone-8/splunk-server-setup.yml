@@ -1,0 +1,38 @@
+---
+- name: Configuring Splunk Enterprise on splunk-server
+  hosts: Blue-Splunk
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Download Splunk enterprise 
+      get_url: url={{ splunk_enterprise }} dest=/tmp/{{ out_file }} 
+
+    - name: Install the package
+      command: sudo dpkg -i /tmp/{{ out_file }}
+
+    - name: Set splunk Admin password before first start
+      copy:
+        dest: "/opt/splunk/etc/system/local/user-seed.conf"
+        content: |
+          [user_info]
+          USERNAME = admin
+          PASSWORD = {{ splunk_admin_password }}
+
+    - name: Accept Splunk license and start Splunk
+      command: "/opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt"
+    
+    - name: Enable Splunk on system startup
+      command: "/opt/splunk/bin/splunk enable boot-start"
+
+    - name: Enable TCP Listener port
+      command: "/opt/splunk/bin/splunk enable listen 9997 -auth admin:{{ splunk_admin_password }}"
+
+    - name: Add vyos_logs index 
+      command: "/opt/splunk/bin/splunk add index vyos_logs -auth admin:{{ splunk_admin_password }}" 
+
+    - name: Restart Splunk
+      command: "/opt/splunk/bin/splunk restart"
+
+    - name: Remove Splunk .deb 
+      command: "rm /tmp/{{ out_file }}"

@@ -37,16 +37,23 @@ all:
             Blue-Ubuntu:
               hosts:
                 Ubuntu1:
-                  ansible_host: 10.0.5.83
+                  ansible_host: 10.0.5.75
                   hostname: ubuntu1
                   IP: 10.0.5.30
                   device: ens34
 
                 Ubuntu2:
-                  ansible_host: 10.0.5.80
+                  ansible_host: 10.0.5.76
                   hostname: ubuntu2
                   IP: 10.0.5.31
                   device: ens34
+                
+                Blue-Splunk:
+                  ansible_host: 10.0.5.50
+                  hostname: splunk-server
+                  IP: 10.0.5.50
+                  device: ens34
+                  splunk_user: splunk
 
       
       vars:

@@ -1,6 +1,6 @@
 ---
 - name: Configuring Ubuntu post deployment
-  hosts: Blue-Ubuntu
+  hosts: Blue-Splunk
   gather_facts: no
 
   tasks:
