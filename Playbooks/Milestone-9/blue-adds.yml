@@ -108,7 +108,7 @@
 
     - name: Creating the new Domain Admin
       win_shell: |
-      # Create the new domain admin user
+        # Create the new domain admin user
         $securePassword = ConvertTo-SecureString "{{ domain_admin_password }}" -AsPlainText -Force
         New-ADUser -Name "{{ domain_admin_username }}" `
                   -SamAccountName "{{ domain_admin_username }}" `
