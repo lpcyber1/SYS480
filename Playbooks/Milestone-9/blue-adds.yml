@@ -109,18 +109,15 @@
     - name: Creating the new Domain Admin
       win_shell: |
       # Create the new domain admin user
-      $securePassword = ConvertTo-SecureString "{{ domain_admin_password }}" -AsPlainText -Force
-      New-ADUser -Name "{{ domain_admin_username }}" `
-                 -SamAccountName "{{ domain_admin_username }}" `
-                 -UserPrinicpalName "{{ domain_admin_username }}@blue.local" `
-                 -AccountPassword $securePassword `
-                 -Enabled $true `
-                 -PasswordNeverExpires $true `
-                 -Path "OU=Accounts,OU=blue1,DC=blue,DC=local" `
-                 -Description "Domain Admin Account"
-      
-      # Add user to Domain Admin group
-      Add-ADGroupMember -Identiy "Domain Admins" -Members "{{ domain_admin_username }}"
-
-    - name: Restarting the machine to ensure changes
-      win_reboot:
+        $securePassword = ConvertTo-SecureString "{{ domain_admin_password }}" -AsPlainText -Force
+        New-ADUser -Name "{{ domain_admin_username }}" `
+                  -SamAccountName "{{ domain_admin_username }}" `
+                  -UserPrinicpalName "{{ domain_admin_username }}@blue.local" `
+                  -AccountPassword $securePassword `
+                  -Enabled $true `
+                  -PasswordNeverExpires $true `
+                  -Path "OU=Accounts,OU=blue1,DC=blue,DC=local" `
+                  -Description "Domain Admin Account"
+        
+        # Add user to Domain Admin group
+        Add-ADGroupMember -Identiy "Domain Admins" -Members "{{ domain_admin_username }}"
