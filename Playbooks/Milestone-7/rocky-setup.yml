@@ -54,12 +54,11 @@
         type: ethernet
         ip4: "{{ IP }}"
         dns4: "{{ name_server }}"
+        dns4_search: "{{ domain }}"
         gw4: "{{ default_router }}"
         state: present
       become: yes
     
     - name: Restart system to apply changes
-      shell: "sleep5 && shutdown -r"
-      async: 1
-      poll: 0
+      ansible.builtin.reboot:
       become: yes

@@ -26,10 +26,10 @@
       command: "/opt/splunk/bin/splunk enable boot-start"
 
     - name: Enable TCP Listener port
-      command: "/opt/splunk/bin/splunk enable listen 9997 -auth admin:{{ splunk_admin_password }}"
+      command: "/opt/splunk/bin/splunk enable listen 9997 -auth admin:{{ splunk_admin_password }} --answer-yes --no-prompt"
 
-    - name: Add vyos_logs index 
-      command: "/opt/splunk/bin/splunk add index vyos_logs -auth admin:{{ splunk_admin_password }}" 
+    - name: Add ubuntu_logs index 
+      command: "/opt/splunk/bin/splunk add index ubuntu_logs -auth admin:{{ splunk_admin_password }} --answer-yes --no-prompt" 
 
     - name: Restart Splunk
       command: "/opt/splunk/bin/splunk restart"

@@ -1,0 +1,9 @@
+---
+- name: Creating users and groups on blue1-dc 
+  hosts: blue1-dc
+  become: no
+  gather_facts: false
+
+  tasks:
+
+  

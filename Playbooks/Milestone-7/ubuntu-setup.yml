@@ -1,6 +1,6 @@
 ---
 - name: Configuring Ubuntu post deployment
-  hosts: Blue-Splunk
+  hosts: Blue-Ubuntu
   gather_facts: no
 
   tasks:
@@ -58,7 +58,5 @@
       become: yes
 
     - name: Restart system to apply changes
-      shell: "sleep5 && shutdown -r"
-      async: 1
-      poll: 0
+      ansible.builtin.reboot:
       become: yes

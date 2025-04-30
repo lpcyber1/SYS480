@@ -13,16 +13,15 @@ all:
 
     Splunk-Forwarder:
       hosts:
-        blue1-fw:
-          ansible_host: 10.0.5.2
-          ansible_user: vyos
-          ansible_python_interpreter: /usr/bin/python3.11
-          wan_ip: 10.0.17.200
-          lan_ip: 10.0.5.2
-          lan: 10.0.5.0/24
-          nameserver: 10.0.17.4
-          gateway: 10.0.17.2
-          hostname: blue1-fw
+        Ubuntu1:
+          ansible_host: 10.0.5.30
+          ansible_user: deployer
+          splunk_forwarder: https://download.splunk.com/products/universalforwarder/releases/9.4.1/linux/splunkforwarder-9.4.1-e3bdab203ac8-linux-amd64.deb
+          out_file: splunkforwarder-9.4.1-e3bdab203ac8-linux-amd64.deb 
+          splunk_admin_password: "password"
+        Ubuntu2:
+          ansible_host: 10.0.5.31
+          ansible_user: deployer
           splunk_forwarder: https://download.splunk.com/products/universalforwarder/releases/9.4.1/linux/splunkforwarder-9.4.1-e3bdab203ac8-linux-amd64.deb
           out_file: splunkforwarder-9.4.1-e3bdab203ac8-linux-amd64.deb 
           splunk_admin_password: "password"
@@ -32,7 +31,7 @@ all:
 
   vars:
     public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCusuiJFgq2++TXs6JFGR1D6t2fQpfZjpw7Plozzrfw/Op8Orl6gYDtJvWkajvbWY9m+83gCRNmXTsi/xEGu+LjRmVSumyqiTFQBVxAp7Ij4Ps+HHh0wrCDSYfVxQd6gJf7AndxFboiZtsr+fZrmtuPh3MxzE+pb83xihdaXzMZjYNk6p/Gu6SoZMYk/bdtu9J4610O8HBWDPfpf5UQsHWncnH2NgAE6Au7sgorv/pQliUYo6SGTnZiEvGv/gNqLqNU4gu5pJFcFlXOUXLE5ReOvdEic3tfOl30dFU/mi0IFOgSzQVcBPD0mtZC3XSfwGTb3TYJT4XSdZBW/V5oylSQ6dzOdYWAPM03M8I17VkExK6LU3PiwGgFEqh8yMFEFYgeSOOa0sXaKrLfYVWExxRh6lZb6SG5CsPPfoujx/WQhHrPCSFJemCslwNjhJNrhlAxOn3nFUqberShp2OIfuEJ1q1L/SLUZs4C+KJWgND8H5cCDeJPA8mMHOr5/U+VHpoT0IjK/mi+b5sJoJNw+QwFEg9okQYoIENx8zX18blGb7OM/4mWb6SVIgpj7Jm+ezdHtiGu6NddS3j013H06j2VI4sIa9aTzVlizjbrT2X4dDH2ohjCNxLTafK2n56fyeaXqkqWndYyToxqIq2LXfzbJNJL3AYN4OYCZkGAL37UzQ== deployer@xubuntu-wan
-    domain: blue1.local
+    domain: blue.local
     default_router: 10.0.5.2
-    name_server: 10.0.5.2
+    name_server: 10.0.5.4
     ansible_user: deployer

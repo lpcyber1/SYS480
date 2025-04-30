@@ -1,5 +1,5 @@
 ---
-- name: 
+- name: AD Deployment for blue1-dc
   hosts: blue1-dc
   become: yes
   gather_facts: false
@@ -12,16 +12,6 @@
 
     - name: safe_mode_password
       prompt: "Enter the domain's safe mode password"
-      private: yes
-      confirm: yes
-
-    - name: domain_admin_user
-      prompt: "Enter the new domain admin username"
-      private: no
-      confirm: yes
-
-    - name: domain_admin_password
-      prompt: "Enter the new domain admin password"
       private: yes
       confirm: yes
 
@@ -53,7 +43,7 @@
       win_feature:
         name: AD-Domain-Services
         include_management_tools: yes
-        include_dub_features: yes
+        include_sub_features: yes
         state: present
       register: ad_install
 
@@ -104,20 +94,3 @@
         
         Write-Output "OU Structure created successfully"
       when: domain_creation.changed
-
-
-    - name: Creating the new Domain Admin
-      win_shell: |
-        # Create the new domain admin user
-        $securePassword = ConvertTo-SecureString "{{ domain_admin_password }}" -AsPlainText -Force
-        New-ADUser -Name "{{ domain_admin_user }}" `
-                  -SamAccountName "{{ domain_admin_user }}" `
-                  -UserPrinicpalName "{{ domain_admin_user }}@blue.local" `
-                  -AccountPassword $securePassword `
-                  -Enabled $true `
-                  -PasswordNeverExpires $true `
-                  -Path "OU=Accounts,OU=blue1,DC=blue,DC=local" `
-                  -Description "Domain Admin Account"
-        
-        # Add user to Domain Admin group
-        Add-ADGroupMember -Identiy "Domain Admins" -Members "{{ domain_admin_user }}"

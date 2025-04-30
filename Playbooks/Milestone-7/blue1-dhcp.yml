@@ -13,8 +13,8 @@
         - set service dhcp-server hostfile-update
         - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 subnet-id '1'
         - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 option default-router '10.0.5.2'
-        - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 option name-server '10.0.5.2'
-        - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 option domain-name 'blue1.local'
+        - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 option name-server '10.0.5.4'
+        - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 option domain-name 'blue.local'
         - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 lease '86400'
         - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 range 0 start '10.0.5.75' 
         - set service dhcp-server shared-network-name BLUE1-LAN subnet 10.0.5.0/24 range 0 stop '10.0.5.125'
